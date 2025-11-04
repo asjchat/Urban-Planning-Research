@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FDOT D5 vs Florida - 65+ Population Growth</title>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 30px;
+            max-width: 1200px;
+            width: 100%;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .header h1 {
+            color: #2d3748;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #718096;
+            font-size: 0.9rem;
+        }
+        
+        #chart {
+            width: 100%;
+            min-height: 600px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.2rem;
+            }
+            
+            #chart {
+                min-height: 500px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Interactive Projected 65+ Population Growth Comparison</h1>
+            <p>Hover over bars for detailed information | Use toolbar to zoom, pan, or download</p>
+        </div>
+        <div id="chart"></div>
+    </div>
+
+    <script>
+        // Data
+        const data = [
+            {"Region": "FDOT D5 Aggregate", "AgeGroup": "65+ Aggregate", "Growth_Pct": 44.36},
+            {"Region": "FDOT D5 Aggregate", "AgeGroup": "65-79", "Growth_Pct": 19.59},
+            {"Region": "FDOT D5 Aggregate", "AgeGroup": "80+", "Growth_Pct": 114.35},
+            {"Region": "FLORIDA", "AgeGroup": "65+ Aggregate", "Growth_Pct": 39.45},
+            {"Region": "FLORIDA", "AgeGroup": "65-79", "Growth_Pct": 14.02},
+            {"Region": "FLORIDA", "AgeGroup": "80+", "Growth_Pct": 109.44}
+        ];
+
+        // Extract unique regions and age groups
+        const regions = [...new Set(data.map(d => d.Region))];
+        const ageGroups = ["65+ Aggregate", "65-79", "80+"];
+
+        // Accessible color palette
+        const colors = {
+            "FDOT D5 Aggregate": "#3B82F6", // Blue
+            "FLORIDA": "#EF4444" // Red
+        };
+
+        // Create traces for each region
+        const traces = regions.map(region => {
+            const regionData = data.filter(d => d.Region === region);
+            const growthValues = ageGroups.map(age => {
+                const item = regionData.find(d => d.AgeGroup === age);
+                return item ? item.Growth_Pct : 0;
+            });
+
+            return {
+                x: ageGroups,
+                y: growthValues,
+                name: region,
+                type: 'bar',
+                marker: {
+                    color: colors[region],
+                    line: {
+                        color: 'rgba(255, 255, 255, 0.5)',
+                        width: 1
+                    }
+                },
+                text: growthValues.map(v => v.toFixed(2) + '%'),
+                textposition: 'outside',
+                textfont: {
+                    size: 12,
+                    color: '#2d3748',
+                    family: 'Arial, sans-serif',
+                    weight: 'bold'
+                },
+                hovertemplate: '<b>%{fullData.name}</b><br>' +
+                               'Age Group: %{x}<br>' +
+                               'Growth: %{y:.2f}%<br>' +
+                               '<extra></extra>'
+            };
+        });
+
+        // Layout configuration
+        const layout = {
+            title: {
+                text: 'Interactive Projected 65+ Population Growth Comparison:<br>FDOT D5 vs. Florida (2025-2050)',
+                font: {
+                    size: 20,
+                    color: '#2d3748',
+                    family: 'Arial, sans-serif',
+                    weight: 'bold'
+                },
+                x: 0.5,
+                xanchor: 'center'
+            },
+            xaxis: {
+                title: {
+                    text: 'Age Group',
+                    font: {
+                        size: 14,
+                        color: '#4a5568',
+                        family: 'Arial, sans-serif'
+                    }
+                },
+                tickfont: {
+                    size: 12,
+                    color: '#4a5568'
+                }
+            },
+            yaxis: {
+                title: {
+                    text: 'Percentage Growth (%)',
+                    font: {
+                        size: 14,
+                        color: '#4a5568',
+                        family: 'Arial, sans-serif'
+                    }
+                },
+                tickfont: {
+                    size: 12,
+                    color: '#4a5568'
+                },
+                gridcolor: '#e2e8f0'
+            },
+            barmode: 'group',
+            bargap: 0.2,
+            bargroupgap: 0.1,
+            plot_bgcolor: '#f7fafc',
+            paper_bgcolor: 'white',
+            legend: {
+                title: {
+                    text: '<b>Region</b>',
+                    font: {
+                        size: 13,
+                        color: '#2d3748'
+                    }
+                },
+                orientation: 'h',
+                x: 0.5,
+                xanchor: 'center',
+                y: -0.15,
+                yanchor: 'top',
+                bgcolor: 'rgba(255, 255, 255, 0.8)',
+                bordercolor: '#cbd5e0',
+                borderwidth: 1,
+                font: {
+                    size: 12,
+                    color: '#4a5568'
+                }
+            },
+            hovermode: 'closest',
+            margin: {
+                l: 80,
+                r: 40,
+                t: 120,
+                b: 100
+            }
+        };
+
+        // Configuration for interactivity
+        const config = {
+            responsive: true,
+            displayModeBar: true,
+            displaylogo: false,
+            modeBarButtonsToAdd: ['hoverclosest', 'hovercompare'],
+            modeBarButtonsToRemove: [],
+            toImageButtonOptions: {
+                format: 'png',
+                filename: 'fdot_d5_florida_65plus_growth_comparison',
+                height: 800,
+                width: 1200,
+                scale: 2
+            }
+        };
+
+        // Render the chart
+        Plotly.newPlot('chart', traces, layout, config);
+
+        // Make chart responsive on window resize
+        window.addEventListener('resize', function() {
+            Plotly.Plots.resize('chart');
+        });
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,23 @@
+Quick push instructions
+
+1) From PowerShell, run the helper script (recommended when git is installed):
+   .\push_to_github.ps1
+   # Optionally pass a repo name or mark as private:
+   .\push_to_github.ps1 -RepoName "Urban-Planning-Population-Projection-Research" -Description "Urban planning population projection research"
+
+2) If you prefer manual commands, run:
+   cd "C:\Users\anand\Desktop\Final Attempt"
+   git init
+   git add .
+   git commit -m "Initial commit"
+   git branch -M main
+   # Replace with your GitHub username and desired repo name
+   git remote add origin https://github.com/YOUR_GITHUB_USERNAME/Urban-Planning-Population-Projection-Research.git
+   git push -u origin main
+
+3) Using GitHub CLI:
+   gh repo create "Urban-Planning-Population-Projection-Research" --public --description "Urban planning population projection research" --source=. --remote=origin --push
+
+Notes:
+- If 'git' or 'gh' are not installed, install Git for Windows and the GitHub CLI.
+- If you'd like me to create the repository remotely for you, provide a GitHub Personal Access Token (PAT) with 'repo' scope. Do not share this token unless you understand the security implications.
